@@ -1,4 +1,5 @@
 import './styles.css';
+import './brand.css';
 import { aiSystems, aiCategories } from './data/ai.js';
 
 const nav = [
