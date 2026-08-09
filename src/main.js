@@ -1,4 +1,5 @@
 import './styles.css';
+import { aiSystems, aiCategories } from './data/ai.js';
 
 const nav = [
   { group: 'Discover', items: [['dashboard', 'Dashboard'], ['directory', 'AI Directory'], ['categories', 'Categories']] },
@@ -7,20 +8,7 @@ const nav = [
   { group: 'System', items: [['settings', 'Settings']] }
 ];
 
-const featured = [
-  ['GPT', 'OpenAI', 'General intelligence', '01'],
-  ['Claude', 'Anthropic', 'Reasoning & analysis', '02'],
-  ['Gemini', 'Google', 'Multimodal intelligence', '03'],
-  ['Perplexity', 'Perplexity AI', 'Research & discovery', '04'],
-  ['Grok', 'xAI', 'Real-time information', '05']
-];
-
-const categories = [
-  ['Research', 'Find, investigate and understand information.', '↗'],
-  ['Create', 'Writing, images, video, audio and design.', '✦'],
-  ['Build', 'Coding, software and technical work.', '</>'],
-  ['Analyse', 'Documents, data and complex problems.', '◌']
-];
+const categoryGlyphs = { research: '↗', create: '✦', build: '</>', analyse: '◌' };
 
 function icon(name) {
   const icons = {
@@ -36,15 +24,15 @@ function render() {
     <div class="app-shell">
       <aside class="sidebar">
         <div class="brand">
-          <div class="brand-mark">O</div>
+          <div class="brand-mark" aria-hidden="true"><span>O</span></div>
           <div><div class="brand-name">ORÍKÌ</div><div class="brand-type">AI</div></div>
         </div>
         <div class="tagline">Know your intelligence.</div>
-        <nav>
+        <nav aria-label="Primary navigation">
           ${nav.map(section => `
             <div class="nav-group">
               <div class="nav-label">${section.group}</div>
-              ${section.items.map(([id, label], i) => `<button class="nav-item ${id === 'dashboard' ? 'active' : ''}" data-page="${id}">${icon(id)}<span>${label}</span>${id === 'dashboard' ? '<span class="active-dot"></span>' : ''}</button>`).join('')}
+              ${section.items.map(([id, label]) => `<button class="nav-item ${id === 'dashboard' ? 'active' : ''}" data-page="${id}">${icon(id)}<span>${label}</span>${id === 'dashboard' ? '<span class="active-dot"></span>' : ''}</button>`).join('')}
             </div>
           `).join('')}
         </nav>
@@ -77,11 +65,11 @@ function render() {
         <section class="section featured-section">
           <div class="section-head"><div><div class="section-kicker">FEATURED</div><h2>Explore intelligence</h2></div><button class="text-button">View all <span>→</span></button></div>
           <div class="ai-grid">
-            ${featured.map(([name, provider, desc, num]) => `
+            ${aiSystems.map((ai, index) => `
               <article class="ai-card">
-                <div class="card-top"><div class="ai-emblem">${name.slice(0,1)}</div><span class="card-number">${num}</span></div>
-                <h3>${name}</h3><div class="provider">${provider}</div><p>${desc}</p>
-                <div class="card-footer"><div class="capability"><span></span><span></span><span></span></div><button class="arrow-button">↗</button></div>
+                <div class="card-top"><div class="ai-emblem" aria-label="${ai.name} logo">${ai.name.slice(0,1)}</div><span class="card-number">${String(index + 1).padStart(2, '0')}</span></div>
+                <h3>${ai.name}</h3><div class="provider">${ai.provider}</div><p>${ai.description}</p>
+                <div class="card-footer"><div class="capability">${ai.capabilities.slice(0, 3).map(() => '<span></span>').join('')}</div><a class="arrow-button" href="${ai.website}" target="_blank" rel="noreferrer" aria-label="Open ${ai.name}">↗</a></div>
               </article>
             `).join('')}
           </div>
@@ -90,14 +78,14 @@ function render() {
         <section class="section categories-section">
           <div class="section-head"><div><div class="section-kicker">DISCOVER BY PURPOSE</div><h2>What are you working on?</h2></div></div>
           <div class="category-grid">
-            ${categories.map(([name, desc, glyph]) => `<button class="category-card"><span class="category-glyph">${glyph}</span><span><strong>${name}</strong><small>${desc}</small></span><span class="category-arrow">→</span></button>`).join('')}
+            ${aiCategories.map(category => `<button class="category-card"><span class="category-glyph">${categoryGlyphs[category.id] || '•'}</span><span><strong>${category.name}</strong><small>${category.description}</small></span><span class="category-arrow">→</span></button>`).join('')}
           </div>
         </section>
 
         <footer><span>ORÍKÌ AI</span><span>Know your intelligence.</span><span>Stage 1 · Foundation</span></footer>
       </main>
     </div>
-    <div class="toast" id="toast"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   `;
 
   document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => {
