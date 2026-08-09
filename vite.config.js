@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/AI/'
+  // Relative asset URLs work both with the Vite Pages deployment
+  // and when GitHub Pages serves the repository directly.
+  base: './'
 });
