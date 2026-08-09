@@ -1,117 +1,59 @@
-import './styles.css';
-import './brand.css';
-import { aiSystems, aiCategories } from './data/ai.js';
-
-const nav = [
-  { group: 'Discover', items: [['dashboard', 'Dashboard'], ['directory', 'AI Directory'], ['categories', 'Categories']] },
-  { group: 'Intelligence', items: [['compare', 'Compare'], ['router', 'AI Router'], ['feed', 'Intelligence Feed']] },
-  { group: 'My ORÍKÌ', items: [['my-ai', 'My AI'], ['saved', 'Saved']] },
-  { group: 'System', items: [['settings', 'Settings']] }
+const aiSystems = [
+  { name: 'GPT', provider: 'OpenAI', type: 'General intelligence', description: 'Reasoning, writing, coding, analysis and multimodal work.', url: 'https://chatgpt.com/' },
+  { name: 'Claude', provider: 'Anthropic', type: 'Reasoning & analysis', description: 'Deep analysis, long documents, writing and coding.', url: 'https://claude.ai/' },
+  { name: 'Gemini', provider: 'Google', type: 'Multimodal intelligence', description: 'Research, multimodal reasoning and productivity.', url: 'https://gemini.google.com/' },
+  { name: 'Perplexity', provider: 'Perplexity', type: 'Research & discovery', description: 'Web research and source-backed answers.', url: 'https://www.perplexity.ai/' },
+  { name: 'Grok', provider: 'xAI', type: 'Real-time information', description: 'Conversation, reasoning and current information.', url: 'https://grok.com/' }
 ];
 
-const categoryGlyphs = { research: '↗', create: '✦', build: '</>', analyse: '◌' };
+const categories = [
+  ['RESEARCH', 'Find, investigate and understand information.', '↗'],
+  ['CREATE', 'Writing, images, video, audio and design.', '✦'],
+  ['BUILD', 'Coding, software and technical work.', '</>'],
+  ['ANALYSE', 'Documents, data and complex problems.', '◌']
+];
 
-function icon(name) {
-  const icons = {
-    dashboard: '<span class="nav-icon">⌂</span>', directory: '<span class="nav-icon">◈</span>', categories: '<span class="nav-icon">◫</span>',
-    compare: '<span class="nav-icon">⇄</span>', router: '<span class="nav-icon">⌁</span>', feed: '<span class="nav-icon">◉</span>',
-    'my-ai': '<span class="nav-icon">☆</span>', saved: '<span class="nav-icon">▱</span>', settings: '<span class="nav-icon">⚙</span>'
-  };
-  return icons[name] || '<span class="nav-icon">•</span>';
-}
+const style = document.createElement('style');
+style.textContent = `
+:root{color-scheme:dark;--bg:#070706;--panel:#0d0d0b;--panel2:#11110e;--line:rgba(215,184,106,.16);--gold:#d7b86a;--gold2:#f1d58a;--muted:#8d8a80;--text:#f2efe7}
+*{box-sizing:border-box}html,body,#root{margin:0;min-height:100%;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}button,input{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:flex;background:radial-gradient(circle at 72% 0%,rgba(215,184,106,.08),transparent 30%),var(--bg)}
+.sidebar{width:245px;flex:0 0 245px;border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column;min-height:100vh;background:rgba(7,7,6,.92)}
+.brand{display:flex;align-items:center;gap:12px;padding:0 10px}.mark{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;font-weight:900;color:#241804;background:linear-gradient(145deg,#fff0ae,#d7b86a 45%,#74500f);box-shadow:inset 1px 1px 0 #fff8d0,0 8px 25px rgba(215,184,106,.16);transform:perspective(100px) rotateY(-8deg) rotateX(4deg)}.brand-name{font-size:19px;font-weight:800;letter-spacing:.14em}.brand-ai{font-size:10px;color:var(--gold);letter-spacing:.3em;margin-top:2px}.tagline{font-size:10px;color:var(--muted);letter-spacing:.04em;padding:11px 10px 28px}.nav-group{margin-bottom:24px}.nav-label{font-size:9px;color:#5f5c55;letter-spacing:.18em;text-transform:uppercase;padding:0 11px 8px}.nav-item{position:relative;width:100%;border:0;background:transparent;color:#98958b;text-align:left;padding:11px;border-radius:9px;display:flex;align-items:center;gap:11px;font-size:13px;margin:2px 0}.nav-item:hover{background:#11110e;color:#ddd7c8}.nav-item.active{color:var(--gold2);background:linear-gradient(90deg,rgba(215,184,106,.12),transparent)}.nav-icon{width:18px;text-align:center;color:inherit}.dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:auto;box-shadow:0 0 10px var(--gold)}.sidebar-foot{margin-top:auto;border-top:1px solid var(--line);padding:17px 10px 0;color:#66645d;font-size:10px;display:flex;gap:7px;align-items:center}.online{width:6px;height:6px;background:#70b76d;border-radius:50%;box-shadow:0 0 8px #70b76d}.version{margin-left:auto}
+.main{width:100%;max-width:1440px;margin:0 auto;padding:0 42px}.topbar{height:76px;display:flex;align-items:center;border-bottom:1px solid var(--line)}.crumb{font-size:11px;color:#77746b;letter-spacing:.08em}.crumb b{color:var(--gold);font-weight:600}.actions{margin-left:auto;display:flex;gap:9px;align-items:center}.action{border:1px solid var(--line);background:#0d0d0b;color:#aaa69b;width:35px;height:35px;border-radius:9px}.avatar{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;color:#19140a;background:linear-gradient(145deg,#f2d88f,#9d7424);font-size:10px;font-weight:800}
+.hero{padding:72px 0 56px;max-width:880px}.eyebrow,.kicker{font-size:9px;letter-spacing:.22em;color:var(--gold);font-weight:700}.hero h1{font-size:clamp(42px,6vw,76px);line-height:.96;letter-spacing:-.045em;margin:18px 0 18px;font-weight:700}.hero h1 em{font-style:normal;color:var(--gold2);text-shadow:0 0 30px rgba(215,184,106,.12)}.hero p{max-width:620px;color:#8e8a81;font-size:15px;line-height:1.7;margin:0 0 30px}.search{max-width:760px;border:1px solid rgba(215,184,106,.28);background:#0e0e0c;border-radius:14px;padding:6px;display:flex;box-shadow:0 15px 45px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.03)}.search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#eee;padding:13px 14px;font-size:13px}.search input::placeholder{color:#626057}.search button{border:0;border-radius:9px;background:linear-gradient(135deg,#e3c577,#a87c25);color:#1d1507;padding:0 18px;font-weight:800;font-size:11px}.hints{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px;color:#5f5d56;font-size:10px}.hints button{border:0;background:transparent;color:#858176;padding:0}.hints button:hover{color:var(--gold)}
+.section{padding:8px 0 58px}.section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:20px}.section-head h2{font-size:22px;margin:6px 0 0;letter-spacing:-.025em}.view{border:0;background:transparent;color:var(--gold);font-size:10px}.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.card{position:relative;min-height:255px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#12120f,#0b0b09);padding:18px;display:flex;flex-direction:column;transition:.2s}.card:hover{transform:translateY(-4px);border-color:rgba(215,184,106,.38);box-shadow:0 18px 40px rgba(0,0,0,.3)}.emblem{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:#171713;border:1px solid rgba(255,255,255,.08);color:var(--gold2);font-weight:800;box-shadow:inset 1px 1px rgba(255,255,255,.06)}.number{margin-left:auto;color:#4d4b45;font-size:9px}.card-top{display:flex}.card h3{font-size:18px;margin:24px 0 3px}.provider{font-size:10px;color:var(--gold)}.card p{color:#77746b;font-size:11px;line-height:1.55;margin:12px 0}.card-bottom{margin-top:auto;display:flex;align-items:center;justify-content:space-between}.type{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#55534d}.open{width:31px;height:31px;border-radius:8px;border:1px solid var(--line);background:#11110e;color:var(--gold);text-decoration:none;display:grid;place-items:center}
+.category-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.category{border:1px solid var(--line);background:#0c0c0a;border-radius:13px;color:var(--text);padding:20px;text-align:left;display:flex;align-items:flex-start;gap:14px}.category:hover{border-color:rgba(215,184,106,.38);background:#11110e}.glyph{font-size:21px;color:var(--gold);width:28px}.category strong{display:block;font-size:13px}.category small{display:block;color:#706d65;font-size:10px;line-height:1.5;margin-top:5px}.arrow{margin-left:auto;color:#55524b}footer{border-top:1px solid var(--line);padding:24px 0 35px;color:#535149;font-size:9px;display:flex;justify-content:space-between;letter-spacing:.1em}.toast{position:fixed;right:24px;bottom:24px;background:#171713;border:1px solid var(--line);color:#d8d3c7;border-radius:10px;padding:12px 16px;font-size:11px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:none}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(3,1fr)}.category-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.sidebar{display:none}.main{padding:0 18px}.topbar{height:64px}.hero{padding:50px 0 42px}.hero h1{font-size:46px}.search{display:block;background:#0e0e0c;padding:8px}.search input{width:100%;height:48px}.search button{width:100%;height:42px}.cards{grid-template-columns:1fr 1fr}.category-grid{grid-template-columns:1fr}.section-head{align-items:start}.view{display:none}}@media(max-width:480px){.cards{grid-template-columns:1fr}.hero h1{font-size:40px}.hero p{font-size:13px}footer{display:block;line-height:2}.actions .action{display:none}}
+`;
+document.head.appendChild(style);
 
-function render() {
-  document.querySelector('#root').innerHTML = `
-    <div class="app-shell">
-      <aside class="sidebar">
-        <div class="brand">
-          <div class="brand-mark" aria-hidden="true"><span>O</span></div>
-          <div><div class="brand-name">ORÍKÌ</div><div class="brand-type">AI</div></div>
-        </div>
-        <div class="tagline">Know your intelligence.</div>
-        <nav aria-label="Primary navigation">
-          ${nav.map(section => `
-            <div class="nav-group">
-              <div class="nav-label">${section.group}</div>
-              ${section.items.map(([id, label]) => `<button class="nav-item ${id === 'dashboard' ? 'active' : ''}" data-page="${id}">${icon(id)}<span>${label}</span>${id === 'dashboard' ? '<span class="active-dot"></span>' : ''}</button>`).join('')}
-            </div>
-          `).join('')}
-        </nav>
-        <div class="sidebar-foot"><span class="status-dot"></span><span>ORÍKÌ online</span><span class="version">v0.1</span></div>
-      </aside>
+const root = document.getElementById('root');
+root.innerHTML = `
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="mark">O</div><div><div class="brand-name">ORÍKÌ</div><div class="brand-ai">AI</div></div></div>
+    <div class="tagline">Know your intelligence.</div>
+    <nav>
+      ${[['DISCOVER',['Dashboard','AI Directory','Categories']],['INTELLIGENCE',['Compare','AI Router','Intelligence Feed']],['MY ORÍKÌ',['My AI','Saved']],['SYSTEM',['Settings']]].map(([group,items])=>`<div class="nav-group"><div class="nav-label">${group}</div>${items.map((x,i)=>`<button class="nav-item ${x==='Dashboard'?'active':''}" data-nav="${x}"><span class="nav-icon">${['⌂','◈','◫','⇄','⌁','◉','☆','▱','⚙'][i]||'•'}</span><span>${x}</span>${x==='Dashboard'?'<span class="dot"></span>':''}</button>`).join('')}</div>`).join('')}
+    </nav>
+    <div class="sidebar-foot"><span class="online"></span>ORÍKÌ online<span class="version">v1.0</span></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="crumb"><b>ORÍKÌ</b> &nbsp;/&nbsp; Dashboard</div><div class="actions"><button class="action">⌕</button><button class="action">◌</button><div class="avatar">BS</div></div></header>
+    <section class="hero">
+      <div class="eyebrow">AI INTELLIGENCE PLATFORM</div>
+      <h1>What intelligence<br><em>do you need?</em></h1>
+      <p>Discover, compare and choose the right AI for the work in front of you.</p>
+      <div class="search"><input id="task" placeholder="What do you want to accomplish?" autocomplete="off"><button id="find">Find intelligence&nbsp; →</button></div>
+      <div class="hints"><span>Try:</span><button data-fill="Research a market">research a market</button><button data-fill="Build a web application">build an application</button><button data-fill="Create a brand identity">create a brand</button></div>
+    </section>
+    <section class="section"><div class="section-head"><div><div class="kicker">FEATURED</div><h2>Explore intelligence</h2></div><button class="view">View all →</button></div><div class="cards">${aiSystems.map((ai,i)=>`<article class="card"><div class="card-top"><div class="emblem">${ai.name[0]}</div><span class="number">${String(i+1).padStart(2,'0')}</span></div><h3>${ai.name}</h3><div class="provider">${ai.provider}</div><p>${ai.description}</p><div class="card-bottom"><span class="type">${ai.type}</span><a class="open" href="${ai.url}" target="_blank" rel="noopener noreferrer">↗</a></div></article>`).join('')}</div></section>
+    <section class="section"><div class="section-head"><div><div class="kicker">DISCOVER BY PURPOSE</div><h2>What are you working on?</h2></div></div><div class="category-grid">${categories.map(([name,desc,glyph])=>`<button class="category" data-nav="${name}"><span class="glyph">${glyph}</span><span><strong>${name}</strong><small>${desc}</small></span><span class="arrow">→</span></button>`).join('')}</div></section>
+    <footer><span>ORÍKÌ AI</span><span>Know your intelligence.</span><span>Stage 1 · Foundation</span></footer>
+  </main>
+</div><div class="toast" id="toast"></div>`;
 
-      <main class="main">
-        <header class="topbar">
-          <button class="mobile-menu" aria-label="Open navigation">☰</button>
-          <div class="breadcrumb">ORÍKÌ <span>/</span> Dashboard</div>
-          <div class="top-actions">
-            <button class="icon-button" aria-label="Search">⌕</button>
-            <button class="icon-button" aria-label="Notifications">◌</button>
-            <div class="avatar">BS</div>
-          </div>
-        </header>
-
-        <section class="hero">
-          <div class="eyebrow">AI INTELLIGENCE PLATFORM</div>
-          <h1>What intelligence<br><em>do you need?</em></h1>
-          <p class="hero-copy">Discover, compare and choose the right AI for the work in front of you.</p>
-          <div class="search-box">
-            <span class="search-symbol">⌕</span>
-            <input id="task-search" placeholder="What do you want to accomplish?" autocomplete="off" />
-            <button id="find-btn">Find intelligence <span>→</span></button>
-          </div>
-          <div class="search-hints"><span>Try:</span><button data-fill="Research the Nigerian construction market">research a market</button><button data-fill="Build a web application">build an application</button><button data-fill="Create a brand identity">create a brand</button></div>
-        </section>
-
-        <section class="section featured-section">
-          <div class="section-head"><div><div class="section-kicker">FEATURED</div><h2>Explore intelligence</h2></div><button class="text-button">View all <span>→</span></button></div>
-          <div class="ai-grid">
-            ${aiSystems.map((ai, index) => `
-              <article class="ai-card">
-                <div class="card-top"><div class="ai-emblem" aria-label="${ai.name} logo">${ai.name.slice(0,1)}</div><span class="card-number">${String(index + 1).padStart(2, '0')}</span></div>
-                <h3>${ai.name}</h3><div class="provider">${ai.provider}</div><p>${ai.description}</p>
-                <div class="card-footer"><div class="capability">${ai.capabilities.slice(0, 3).map(() => '<span></span>').join('')}</div><a class="arrow-button" href="${ai.website}" target="_blank" rel="noreferrer" aria-label="Open ${ai.name}">↗</a></div>
-              </article>
-            `).join('')}
-          </div>
-        </section>
-
-        <section class="section categories-section">
-          <div class="section-head"><div><div class="section-kicker">DISCOVER BY PURPOSE</div><h2>What are you working on?</h2></div></div>
-          <div class="category-grid">
-            ${aiCategories.map(category => `<button class="category-card"><span class="category-glyph">${categoryGlyphs[category.id] || '•'}</span><span><strong>${category.name}</strong><small>${category.description}</small></span><span class="category-arrow">→</span></button>`).join('')}
-          </div>
-        </section>
-
-        <footer><span>ORÍKÌ AI</span><span>Know your intelligence.</span><span>Stage 1 · Foundation</span></footer>
-      </main>
-    </div>
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  `;
-
-  document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    btn.classList.add('active');
-    if (btn.dataset.page !== 'dashboard') showToast(`${btn.textContent.trim()} is coming in the next stage.`);
-  }));
-
-  document.querySelectorAll('[data-fill]').forEach(btn => btn.addEventListener('click', () => {
-    document.querySelector('#task-search').value = btn.dataset.fill;
-    document.querySelector('#task-search').focus();
-  }));
-
-  document.querySelector('#find-btn').addEventListener('click', () => {
-    const value = document.querySelector('#task-search').value.trim();
-    showToast(value ? 'AI Router is being prepared for this task.' : 'Tell ORÍKÌ what you want to accomplish.');
-  });
-}
-
-function showToast(message) {
-  const toast = document.querySelector('#toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
-}
-
-render();
+const toast = message => { const el=document.getElementById('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(window.__toast); window.__toast=setTimeout(()=>el.classList.remove('show'),2400); };
+document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',()=>{ if(el.dataset.nav!=='Dashboard') toast(`${el.dataset.nav} will be added in a later stage.`); }));
+document.querySelectorAll('[data-fill]').forEach(el=>el.addEventListener('click',()=>{document.getElementById('task').value=el.dataset.fill;document.getElementById('task').focus();}));
+document.getElementById('find').addEventListener('click',()=>toast(document.getElementById('task').value.trim()?'ORÍKÌ will route this task in a future stage.':'Tell ORÍKÌ what you want to accomplish.'));
